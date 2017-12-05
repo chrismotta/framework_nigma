@@ -1,0 +1,11 @@
+{	
+    "require": {
+        "piwik/device-detector": "3.*",
+		"ip2location/ip2location-php": "8.*",
+		"predis/predis": "1.*"
+    },
+    "minimum-stability": "stable",
+    "config": {
+    	"vendor-dir": "../vendor"
+    }
+}
