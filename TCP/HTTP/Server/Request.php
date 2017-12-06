@@ -1,19 +1,20 @@
 <?php
 
-	namespace Aff\Framework\TCP\HTTP\Server;
+    namespace Aff\Framework\TCP\HTTP\Server;
 
-	use Aff\Framework;
+    use Aff\Framework;
 
 
-	class Request extends Framework\ObjectAbstract implements RequestInterface
-	{
+    class Request extends Framework\ObjectAbstract implements RequestInterface
+    {
 
-		protected $_timestamp;
-		protected $_data;
-		protected $_headers;
+        protected $_timestamp;
+        protected $_data;
+        protected $_headers;
         protected $_cookies;
 
         protected $_path;
+        protected $_referer;
         protected $_agent;
         protected $_method;
         protected $_sourceIp;
@@ -30,16 +31,16 @@
         protected $_body;
 
 
-		public function __construct ( )
-		{
-			parent::__construct();
+        public function __construct ( )
+        {
+            parent::__construct();
 
-			$this->_init();
-		}
+            $this->_init();
+        }
 
 
-		protected function _init ( )
-		{
+        protected function _init ( )
+        {
             if ( \function_exists('getallheaders') ) 
             {
                 $this->_headers = \getallheaders();
@@ -57,7 +58,7 @@
                 }               
             }
 
-			$this->_timestamp = $_SERVER['REQUEST_TIME'];
+            $this->_timestamp = $_SERVER['REQUEST_TIME'];
             $this->_cookies = $_COOKIE;
             $this->_query = $_SERVER['QUERY_STRING'];            
             $this->_method = strtoupper( $_SERVER['REQUEST_METHOD'] );
@@ -80,6 +81,8 @@
             if ( $this->_pathElements[0] == '' )
                 \array_shift($this->_pathElements);
 
+            if ( isset($_SERVER['HTTP_REFERER']) )
+                $this->_referer = $_SERVER['HTTP_REFERER'];
 
             if ( isset($_SERVER['HTTP_USER_AGENT']) )
             {
@@ -134,7 +137,7 @@
                 break;
             }
             
-		}
+        }
 
 
         public function isHttps ( )
@@ -144,58 +147,58 @@
 
             return false;
         }
-		
-		
-		public function getHeader ( $name )
-		{
-			if ( isset( $this->_headers[$name] ) )
-			{
-				return $this->_headers[$name];
-			}
-			
-			return null;
-		}
-		
-		
-		public function getHeaders ( )
-		{
-			return $this->_headers;
-		}
-				
+        
+        
+        public function getHeader ( $name )
+        {
+            if ( isset( $this->_headers[$name] ) )
+            {
+                return $this->_headers[$name];
+            }
+            
+            return null;
+        }
+        
+        
+        public function getHeaders ( )
+        {
+            return $this->_headers;
+        }
+                
 
-		public function getCookie ( $name )
-		{
-			if ( isset($this->_cookies[$name]) )
-			{
-				return $this->_cookies[$name];
-			}
-			
-			return null;
-		}
-
-
-		public function getCookies ( )
-		{
-			return $this->_cookies;
-		}		
+        public function getCookie ( $name )
+        {
+            if ( isset($this->_cookies[$name]) )
+            {
+                return $this->_cookies[$name];
+            }
+            
+            return null;
+        }
 
 
-		public function getData ( )
-		{
-			return $this->_data;
-		}
+        public function getCookies ( )
+        {
+            return $this->_cookies;
+        }       
+
+
+        public function getData ( )
+        {
+            return $this->_data;
+        }
      
 
 
-		public function getParam ( $name )
-		{						
-			if ( isset( $this->_data[$name] ) )
-			{                
+        public function getParam ( $name )
+        {                       
+            if ( isset( $this->_data[$name] ) )
+            {                
                 return $this->_data[$name];
-			}
+            }
                          
             return null;
-		}
+        }
 
         public function getBody ( )
         {
@@ -203,64 +206,68 @@
         }
 
 
-		public function getTimestamp ( )
-		{
-			return $this->_timestamp;
-		}
-		
-				
-		public function getUserAgent ( )
-		{
-			return $this->_agent;
-		}
-		
-
-		public function getMethod ( )
-		{
-			return $this->_method;
-		}
-		
-		
-		public function getSourceIp ( )
-		{
-			return $this->_sourceIp;			
-		}
-		
-		
-		public function getSourceHostname ( )
-		{
-			return $this->_sourceHost;			
-		}
-		
-		
-		public function getSourcePort ( )
-		{
-			return $this->_sourcePort;			
-		}
-
-
-		public function getDestinationIp ( )
-		{
-			return $this->_destinationIp;
-		}
+        public function getTimestamp ( )
+        {
+            return $this->_timestamp;
+        }
+        
+                
+        public function getUserAgent ( )
+        {
+            return $this->_agent;
+        }
+        
+        public function getReferer ( )
+        {
+            return $this->_referer;
+        }
+        
+        public function getMethod ( )
+        {
+            return $this->_method;
+        }
+        
+        
+        public function getSourceIp ( )
+        {
+            return $this->_sourceIp;            
+        }
+        
+        
+        public function getSourceHostname ( )
+        {
+            return $this->_sourceHost;          
+        }
+        
+        
+        public function getSourcePort ( )
+        {
+            return $this->_sourcePort;          
+        }
 
 
-		public function getDestinationHostname ( )
-		{
-			return $this->_destinationHost;
-		}
+        public function getDestinationIp ( )
+        {
+            return $this->_destinationIp;
+        }
 
 
-		public function getDestinationPort ( )
-		{
-			return $this->_destinationPort;
-		}
+        public function getDestinationHostname ( )
+        {
+            return $this->_destinationHost;
+        }
 
 
-		public function getBrowserData ( )
-		{
-			return \get_browser( $this->_agent, true );
-		}
+        public function getDestinationPort ( )
+        {
+            return $this->_destinationPort;
+        }
+
+
+        public function getBrowserData ( )
+        {
+            return \get_browser( $this->_agent, true );
+        }
 
 
         public function getUsername ( )
@@ -309,6 +316,6 @@
             return null;
         }
 
-	}
+    }
 
 ?>
