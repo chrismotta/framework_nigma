@@ -80,6 +80,11 @@
 
 		public function getMobileCarrier ( )
 		{
+			/*
+			var_dump($this->_ISPRecord->organization);echo '<br><br>';
+			var_dump($this->_ISPRecord->isp);echo '<br><br>';
+			var_dump($this->_ISPRecord->raw['autonomous_system_organization']);echo '<br><br>';die();
+			*/
 			if ( isset( $this->_ISPRecord->raw['autonomous_system_organization'] ) )
 				return $this->_ISPRecord->raw['autonomous_system_organization'];
 
