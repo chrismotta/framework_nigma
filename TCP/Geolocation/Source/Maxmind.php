@@ -94,7 +94,7 @@
 		public function getCountryCode ( )
 		{
 			if ( $this->_countryRecord )
-				return $this->_countryRecord->country->isoCode;
+				return strtolower($this->_countryRecord->country->isoCode);
 
 			return null;
 		}
