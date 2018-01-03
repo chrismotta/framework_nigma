@@ -4,6 +4,7 @@
 	
 	use Aff\Framework,
 		Aff\Framework\TCP\Geolocation,
+		GeoIp2,
 		GeoIp2\Database\Reader;
 
 
@@ -13,6 +14,8 @@
 		private $_connTypeReader;
 		private $_ISPReader;
 		private $_countryReader;
+
+		private $_exception;
 
 		private $_connTypeRecord;
 		private $_ISPRecord;
@@ -38,11 +41,27 @@
 				unset( $this->_connTypeRecord );			
 
 			if ( $this->_ISPRecord )
-				unset( $this->_ISPRecord );			
+				unset( $this->_ISPRecord );
 
-			$this->_countryRecord  = $this->_countryReader->country($ip);
-			$this->_ISPRecord 	   = $this->_ISPReader->isp($ip);
-			$this->_connTypeRecord = $this->_connTypeReader->connectionType($ip);
+			if ( $this->_exception )
+				unset( $this->_exception );							
+
+			try
+			{
+				$this->_countryRecord  = $this->_countryReader->country($ip);
+				$this->_ISPRecord 	   = $this->_ISPReader->isp($ip);
+				$this->_connTypeRecord = $this->_connTypeReader->connectionType($ip);
+			}
+			catch ( GeoIp2\Exception\AddressNotFoundException $e )
+			{
+				$this->_exception  = $e;
+			}
+		}
+
+
+		public function getException ( )
+		{
+			return $this->_exception;
 		}
 
 
@@ -52,20 +71,23 @@
 			{
 				switch ( \strtolower($this->_connTypeRecord->connectionType) )
 				{
-
 					case 'cellular':
 						return 'carrier';
 					break;
+					/*
 					case 'corporate':
 					case 'dialup':
 					case 'cable/dsl':
 						return 'wifi';
 					break;
+					*/
 					default:
-						return null;
+						return 'wifi';
 					break;
 				}
 			}
+
+			return 'wifi';
 		}
 
 
