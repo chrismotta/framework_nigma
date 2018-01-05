@@ -72,7 +72,7 @@
 				switch ( \strtolower($this->_connTypeRecord->connectionType) )
 				{
 					case 'cellular':
-						return 'carrier';
+						return 'mobile';
 					break;
 					/*
 					case 'corporate':
